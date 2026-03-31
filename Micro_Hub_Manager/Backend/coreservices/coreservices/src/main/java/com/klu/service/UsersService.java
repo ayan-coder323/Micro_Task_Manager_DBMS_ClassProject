@@ -160,5 +160,20 @@ public class UsersService {
 			}
 			return response;
 		}
+		
+		public Object deleteUser(Long id, String token)
+		{
+			Map<String, Object> response = new HashMap<>();
+			try {
+				JWT.validateJWT(token);
+				UR.deleteById(id);
+				response.put("code", 200);
+				response.put("message", "User has been deleted");
+			}catch(Exception e) {
+				response.put("code",500);
+				response.put("message", e.getMessage());
+			}
+			return response;
+		}
 }
 
