@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename type &apos;com.klu.service.jwtservice&apos; to &apos;Jwtservice&apos;&#x0D;&#x0A;- Original project: &apos;coreservices&apos;&#x0D;&#x0A;- Original element: &apos;com.klu.service.jwtservice&apos;&#x0D;&#x0A;- Renamed element: &apos;com.klu.service.Jwtservice&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Update textual occurrences in comments and strings" description="Rename type &apos;jwtservice&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.type" input="/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.klu.service{jwtservice.java[jwtservice" matchStrategy="1" name="Jwtservice" qualified="false" references="true" similarDeclarations="false" stamp="1778043111965" textual="false" version="1.0"/>
+</session>
