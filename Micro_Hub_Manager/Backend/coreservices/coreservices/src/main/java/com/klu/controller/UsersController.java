@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,7 +49,7 @@ public class UsersController {
         return US.getAllUsers(page, size, token);
     }
 
-    @PostMapping("/saveuser")
+    @PostMapping("/saveuser") // Adding a new user
     public Object saveUser(@RequestBody Users U, @RequestHeader("Token") String Token) {
         return US.saveUser(U, Token);
     }
@@ -58,5 +59,20 @@ public class UsersController {
             @PathVariable("id") Long id, 
             @RequestHeader("Token") String Token) {
         return US.deleteUser(id, Token);
+    }
+    
+    @GetMapping("/getUser/{id}") // Updating an user
+    public Object getUser(@PathVariable("id") Long id, @RequestHeader String Token)
+    {
+       return US.getUserById(id, Token);
+    }
+    
+    @PutMapping("/updateUser/{id}/{role}")
+    public Object updateUser(@RequestBody Users U,
+                             @PathVariable("id") Long id,
+                             @PathVariable("role") int role,
+                             @RequestHeader String Token)
+    {
+        return US.updateUserRole(U, id, role, Token);
     }
 }

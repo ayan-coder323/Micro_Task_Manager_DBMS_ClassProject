@@ -1,5 +1,5 @@
 from fastapi import APIRouter,Header
-from Models.schemas import SigninSchema, SignupSchema,UserSchema
+from Models.schemas import SigninSchema, SignupSchema, UserSchema
 import httpx
 
 router = APIRouter(prefix="/authservice")
@@ -79,3 +79,22 @@ async def deleteUser(id: int, Token: str = Header(...)):
             headers={"Token": Token}
         )
     return response.json()  
+
+@router.get("/getuser/{id}")
+async def profile(id: int, Token: str = Header(...)):
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"{SPRING_URL}user/getUser/{id}",
+            headers = {"Token": Token}
+        )
+    return response.json()
+
+@router.put("/updateuser/{id}")
+async def update_user(id: int, U: UserSchema, Token: str = Header(...)):
+    async with httpx.AsyncClient() as client:
+        response = await client.put(
+            f"{SPRING_URL}user/updateUser/{id}/{U.role}",
+            json=U.model_dump(),
+            headers={"Token": Token}
+        )
+    return response.json()

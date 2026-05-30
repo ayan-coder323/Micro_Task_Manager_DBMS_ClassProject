@@ -175,5 +175,52 @@ public class UsersService {
 			}
 			return response;
 		}
+		
+		public Object getUserById(Long id, String token)
+		  {
+		    Map<String, Object> response = new HashMap<>();
+		    try
+		    {
+		      JWT.validateJWT(token); //Authorization
+		      Users user = UR.findById(id).get();
+		      
+		          response.put("code", 200);
+		          response.put("user", user);
+		          response.put("message", "User fetched Succesfully");
+		    }catch(Exception e)
+		    {
+		      response.put("code", 500);
+		      response.put("message", e.getMessage());
+		    }
+		    return response;
+		  }
+		
+		public Object updateUserRole(Users U, Long id, int role, String token)
+		{
+		    Map<String,Object> response = new HashMap<>();
+
+		    try {
+		        JWT.validateJWT(token);
+
+		        Users user = UR.findById(id).get();
+		        user.setRole(role);
+		        user.setFullname(U.getFullname());
+		        user.setPhone(U.getPhone());
+		        user.setEmail(U.getEmail());
+		        user.setPassword(U.getPassword());
+		        user.setStatus(U.getStatus());
+
+		        UR.save(user);
+
+		        response.put("code", 200);
+		        response.put("message", "User updated successfully");
+		    }
+		    catch(Exception e) {
+		        response.put("code", 500);
+		        response.put("message", e.getMessage());
+		    }
+
+		    return response;
+		}
 }
 
