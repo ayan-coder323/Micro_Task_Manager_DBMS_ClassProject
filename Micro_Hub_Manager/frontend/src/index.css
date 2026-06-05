@@ -12,6 +12,8 @@
   --border-color: #ddd;
   --background-secondary: #f8f7f7;
   --ddhover: #e2eefb;
+  --red: red;
+  --maroon: #800000;
 }
 html, body, #root{ 
   margin:0;

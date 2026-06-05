@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from Controllers.init import *
+from Controllers.authenticateController import router as authRouter
+from Controllers.taskController import router as taskRouter
 
 app = FastAPI()
 origins = ["http://localhost:5173"]  # Add your frontend URL here
@@ -13,7 +15,9 @@ app.add_middleware(
     allow_credentials=True
 )
 
-app.include_router(AuthenticationRouter)
+
+app.include_router(authRouter)
+app.include_router(taskRouter)
 
 @app.get("/")
 def home():

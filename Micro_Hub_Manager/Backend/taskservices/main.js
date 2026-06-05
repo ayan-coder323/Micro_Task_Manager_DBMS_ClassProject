@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import taskRouter from './controllers/taskController.js';
+import taskRouter from './controller/taskController.js';
 import { connectDB } from './config/db.js';
 
 const app = express(); //Create express object
@@ -22,8 +22,8 @@ app.get("/", async (req, res)=>{
     res.json({code: 200, message: "Started...."});
 });
 
-// const PORT = process.env.PORT;
-// //Listener for the app
-// app.listen(PORT, async ()=>{
-//     console.log("Server running on http://localhost:" + PORT);
-// });
+const PORT = process.env.PORT;
+//Listener for the app
+app.listen(PORT, async ()=>{
+    console.log("Server running on http://localhost:" + PORT);
+});

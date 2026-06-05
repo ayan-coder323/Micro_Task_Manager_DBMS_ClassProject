@@ -7,16 +7,23 @@ class SignupSchema(BaseModel): # Predefined class for the sign up request body
     password: str
 
 class SigninSchema(BaseModel): # Predefined class for the sign in request body
-    username: str # Dont get confused if you see username parameter here it is for the email actually it is being managed at SpringBoot
+    username: str
     password: str
 
-class UserSchema(BaseModel):
+class UserSchema(BaseModel): # Predefined class for the user information response body
     fullname: str
     email: str
     phone: str
-    role: int
-    status: int 
     password: str
+    role: int
+    status: int
 
-
+class TaskSchema(BaseModel):
+    title:str
+    description:str
+    createdby:int
+    assignedto:int
+    priority:int
+    deadline:str
+    status:int
 

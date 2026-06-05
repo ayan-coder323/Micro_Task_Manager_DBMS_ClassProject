@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './TaskManager.css';
 import ProgressBar from './ProgressBar';
-import { apibaseurl, callApi } from '../lib';
+import { apibaseurl, callApi, imgurl } from '../lib';
 
 const TaskManager = ({logout}) => {
     const contentDiv = useRef();
     const tsktitle = useRef();
+    const vs = useRef();
     const [isProgress, setIsProgress] = useState(false);
     const [data, setData] = useState(null);
     const [token, setToken] = useState("");
@@ -19,6 +20,8 @@ const TaskManager = ({logout}) => {
     const [searchvalue, setSearchValue] = useState("");
     const [highlightIndex, setHighlightIndex] = useState(-1);
 
+    const [vectorSearch, setVectorSearch] = useState("");
+
     useEffect(()=>{
         const storedtoken = localStorage.getItem("token");
         if(storedtoken == undefined || storedtoken == "")
@@ -26,8 +29,26 @@ const TaskManager = ({logout}) => {
 
         const ps = Math.floor((contentDiv.current.offsetHeight - 40) / 40);
         setToken(storedtoken);
-        setIsProgress(false);
+        setIsProgress(true);
+        callApi("GET", apibaseurl + "/taskservice/getalltasks/1/" + ps, null, null, loadData, storedtoken);
     },[]);
+
+    function loadTasks(page){
+        const ps = Math.floor((contentDiv.current.offsetHeight - 40) / 40);
+        setIsProgress(true);
+        setActivePage(page - 1);
+        callApi("GET", apibaseurl + "/taskservice/getalltasks/" + page + "/" + ps, null, null, loadData, token);
+    }
+
+    function loadData(res){
+        if(res.code !== 200){
+            alert(res.message);
+            setIsProgress(false);
+            return;
+        }
+        setData(res);
+        setIsProgress(false);
+    }
 
     function addTask(){
         setIsProgress(true);
@@ -131,7 +152,7 @@ const TaskManager = ({logout}) => {
         if(taskData?.id === "")
             callApi("POST", apibaseurl + "/taskservice/createtask", taskData, null, saveTaskHandler, token);
         else
-            callApi("PUT", apibaseurl + "/taskservice/updatetask/" + taskData?.id, taskData, null, saveTaskHandler, token);
+            callApi("PUT", apibaseurl + "/taskservice/updatetask/" + taskData?._id, taskData, null, saveTaskHandler, token);
     }
 
     function saveTaskHandler(res){
@@ -142,40 +163,106 @@ const TaskManager = ({logout}) => {
 
         setShowPopup(false);
         setTaskData(null);
-        //loadUsers(activePage + 1);
+        loadTasks(activePage + 1);
+    }
+
+    function vSearch(){
+        if(vectorSearch.length === 0)
+            loadTasks(1);
+        else{
+            setIsProgress(true);
+            callApi("GET", apibaseurl + "/taskservice/vectorsearch/" + vectorSearch, null, null, loadData, token);
+        }
+    }
+
+    function editTask(id){
+        setIsProgress(true);
+        setErrorData(null);
+        callApi("GET", apibaseurl + "/taskservice/gettask/" + id, null, null, editTaskHandler, token);
+    }
+
+    function editTaskHandler(res){
+        if(res.code !== 200){
+            alert(res.message);
+            setIsProgress(false);
+            return;
+        }
+        setTaskData(res.task);
+        const assignedto = res.task?.assignedto;
+        callApi("GET", apibaseurl + "/authservice/getuser/" + assignedto, null, null, loadSearchUser, token);
+        
+    }
+
+    function loadSearchUser(res){
+        setSearchValue(res.user?.fullname + " (" + res.user?.email + ")");
+        setOptions([]);
+        setShowPopup(true);
+        setTimeout(() => {tsktitle.current?.focus();}, 0);
+        setIsProgress(false);
+    }
+
+    function deleteTask(id){
+        const resp = confirm("Click OK to delete");
+        if(!resp)
+            return;
+
+        setIsProgress(true);
+        callApi("DELETE", apibaseurl + "/taskservice/deletetask/" + id, null, null, deleteTaskHandler, token);
+    }
+
+    function deleteTaskHandler(res){
+        alert(res.message);
+        setShowPopup(false);
+        loadTasks(activePage + 1);
     }
 
     return (
         <div className='tmanager'>
             <div className='tmanager-header'>
                 <label>Task Manager</label>
+                <div>
+                    <label>Vector Search</label>
+                    <input type='text' ref={vs} autoComplete='off' name='vectorSearch' value={vectorSearch} onChange={(e)=>setVectorSearch(e.target.value)} />
+                    <button onClick={()=>vSearch()}>Search</button>
+                </div>
             </div>
             <div className='tmanager-content' ref={contentDiv}>
                 <table>
                     <thead>
                         <tr>
                             <th style={{'width':'50px'}}>S#</th>
-                            <th style={{'width':'350px'}}>Title</th>
-                            <th style={{'width':'150px'}}>Assigned To</th>
+                            <th style={{'width':'200px'}}>Title</th>
+                            <th style={{'width':'250px'}}>Description</th>
                             <th style={{'width':'100px'}}>Priority</th>
                             <th style={{'width':'100px'}}>Deadline</th>
                             <th style={{'width':'100px'}}>Status</th>
                             <th></th>
                         </tr>
                     </thead>
+                    {data?.tasks.map((task, index)=>(
+                        <tr key={task._id}>
+                            <td style={{'text-align':'center'}}>{data.page ? ((data.page - 1) * data.size) + (index + 1) : (index + 1)}</td>
+                            <td>{task.title}</td>
+                            <td>{task.description}</td>
+                            <td style={{'text-align':'center', 'color': task.priority == 0 ? 'var(--primary-color)' : 'var(--red)'}}>{task.priority == 0 ? 'Normal' : 'High'}</td>
+                            <td style={{'text-align':'center'}}>{task.deadline}</td>
+                            <td style={{'text-align':'center', 'color': task.status == 0 ? 'var(--text-dark)' : task.status == 1 ? 'var(--maroon)' : 'var(--secondary-color)'}}>{task.status == 0 ? 'Assigned' : task.status == 1 ? 'In-Progress' : 'Completed'}</td>
+                            <td>
+                                <img src={imgurl + "edit.png"} alt='' onClick={()=>editTask(task._id)} />
+                                <img src={imgurl + "delete.png"} alt='' onClick={()=>deleteTask(task._id)} />
+                            </td>
+                        </tr>
+                    ))}
                 </table>
-                <h2>You can now create and save new tasks by click on the Add New button and check with MongoDB</h2>
-                <p style={{'color':'red','font-style':'italic'}}>Note: The task list view is currently under development and will be available in the next version.</p>
-                
             </div>
             <div className='tmanager-footer'>
                 <button onClick={()=>addTask()}>Add New</button>
                 <div className='pages'>{
-                    // Array.from({ length: data?.totalpages}, (_, index) => (
-                    //     <label key={index} className={index == activePage? 'active': ''} onClick={()=>loadUsers(index + 1)}>
-                    //         {index + 1}
-                    //     </label>
-                    // ))
+                    Array.from({ length: data?.totalpages}, (_, index) => (
+                        <label key={index} className={index == activePage? 'active': ''} onClick={()=>loadTasks(index + 1)}>
+                            {index + 1}
+                        </label>
+                    ))
                 }</div>
             </div>
 

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.klu.models.Users;
 import com.klu.service.UsersService;
 
@@ -49,30 +50,35 @@ public class UsersController {
         return US.getAllUsers(page, size, token);
     }
 
-    @PostMapping("/saveuser") // Adding a new user
+    @PostMapping("/saveuser")
     public Object saveUser(@RequestBody Users U, @RequestHeader("Token") String Token) {
         return US.saveUser(U, Token);
     }
 
+    @PutMapping("/updateuser/{id}")
+    public Object updateUser(
+            @PathVariable("id") Long id,
+            @RequestBody Users updatedUser,
+            @RequestHeader("Token") String token) {
+        return US.updateUser(id, updatedUser, token);
+    }
+
     @DeleteMapping("/deleteUser/{id}")
     public Object deleteUser(
-            @PathVariable("id") Long id, 
+            @PathVariable("id") Long id,
             @RequestHeader("Token") String Token) {
         return US.deleteUser(id, Token);
     }
-    
-    @GetMapping("/getUser/{id}") // Updating an user
-    public Object getUser(@PathVariable("id") Long id, @RequestHeader String Token)
-    {
-       return US.getUserById(id, Token);
+
+    // ✅ FIXED: Consistent naming
+    @GetMapping("/getuser/{id}")
+    public Object getUser(@PathVariable("id") Long id, @RequestHeader("Token") String Token) {
+        return US.getUserById(id, Token);
     }
     
-    @PutMapping("/updateUser/{id}/{role}")
-    public Object updateUser(@RequestBody Users U,
-                             @PathVariable("id") Long id,
-                             @PathVariable("role") int role,
-                             @RequestHeader String Token)
+    @GetMapping("/searchuser/{KEY}")
+    public Object getUsers(@PathVariable("KEY") String key, @RequestHeader("Token") String Token)
     {
-        return US.updateUserRole(U, id, role, Token);
+        return US.searchUser(key,Token);
     }
 }
