@@ -19,3 +19,20 @@ export async function createTask(data, token) {
         return {code: 500, message: error.message};
     }
 }
+
+export async function getAllTasks(page, size, token){
+    let response;
+    try{
+        const payload = jwt.verify(token, SECRETE_KEY); // Authorization
+        const skip = (page - 1) * size;
+        const tasks = await Tasks.find({createdby: payload.crid})
+                                       .skip(skip)
+                                       .limit(size)
+                                       .sort({_id: 1});
+        const totalrecords = await Tasks.countDocuments({createdby: payload.crid});
+        response = {code: 200, page: page, size: size, totalpages: Math.ceil(totalrecords/size), tasks: tasks};
+    } catch (e) {
+        response = {code: 500, message: e.message};
+    }
+    return response;
+}
