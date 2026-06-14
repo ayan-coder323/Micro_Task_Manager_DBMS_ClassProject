@@ -6,6 +6,7 @@ import { stockLevel } from '../utils/helpers'
 const NAV_ITEMS = [
   { id: 'overview',   icon: 'grid',    label: 'Overview'   },
   { id: 'inventory',  icon: 'box',     label: 'Inventory'  },
+  { id: 'tasks',      icon: 'check_circle', label: 'Tasks' },
   { id: 'analytics',  icon: 'bar',     label: 'Analytics'  },
   { id: 'alerts',     icon: 'bell',    label: 'Alerts'     },
   { id: 'profile',    icon: 'user',    label: 'Profile'    },

@@ -38,3 +38,24 @@ class InventoryItemUpdate(BaseModel):
     category: Optional[str] = None
     sku: Optional[str] = None
     reorderLevel: Optional[int] = None
+
+
+class TaskSchema(BaseModel):
+    title: str
+    description: str
+    createdby: int = 0
+    assignedto: int
+    priority: int
+    deadline: str
+    status: int
+    category: str = "general"
+
+
+class TaskUpdateSchema(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    assignedto: Optional[int] = None
+    priority: Optional[int] = None
+    deadline: Optional[str] = None
+    status: Optional[int] = None
+    category: Optional[str] = None

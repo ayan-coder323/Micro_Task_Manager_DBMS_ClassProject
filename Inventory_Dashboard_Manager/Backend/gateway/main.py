@@ -22,6 +22,7 @@ app.include_router(AuthRouter)
 app.include_router(InventoryRouter)
 app.include_router(AnalyticsRouter)
 app.include_router(UserRouter)
+app.include_router(TaskRouter)
 
 
 @app.get("/")

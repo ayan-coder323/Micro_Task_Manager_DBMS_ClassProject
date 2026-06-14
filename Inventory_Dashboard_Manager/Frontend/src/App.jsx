@@ -3,6 +3,7 @@ import { AppProvider, useApp } from './context/AppContext'
 import LoginPage    from './pages/LoginPage'
 import OverviewPage  from './pages/OverviewPage'
 import InventoryPage from './pages/InventoryPage'
+import TasksPage     from './pages/TasksPage'
 import AnalyticsPage from './pages/AnalyticsPage'
 import AlertsPage    from './pages/AlertsPage'
 import ProfilePage   from './pages/ProfilePage'
@@ -26,6 +27,7 @@ function Shell() {
   const Page = {
     overview:  OverviewPage,
     inventory: InventoryPage,
+    tasks:     TasksPage,
     analytics: AnalyticsPage,
     alerts:    AlertsPage,
     profile:   ProfilePage,
