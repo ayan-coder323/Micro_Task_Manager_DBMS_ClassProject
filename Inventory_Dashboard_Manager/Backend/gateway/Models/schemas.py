@@ -17,6 +17,8 @@ class UserLogin(BaseModel):
 class UserUpdate(BaseModel):
     role: str
     isActive: int
+    username: Optional[str] = None
+    email: Optional[str] = None
 
 
 

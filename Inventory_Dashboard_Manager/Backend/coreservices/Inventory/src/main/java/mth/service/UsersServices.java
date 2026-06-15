@@ -137,6 +137,20 @@ public class UsersServices {
         Users user = usersRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + id));
 
+        if (dto.getUsername() != null && !dto.getUsername().trim().isEmpty() && !dto.getUsername().equals(user.getUsername())) {
+            if (usersRepository.existsByUsername(dto.getUsername())) {
+                throw new DuplicateResourceException("Username already taken: " + dto.getUsername());
+            }
+            user.setUsername(dto.getUsername());
+        }
+
+        if (dto.getEmail() != null && !dto.getEmail().trim().isEmpty() && !dto.getEmail().equals(user.getEmail())) {
+            if (usersRepository.existsByEmail(dto.getEmail())) {
+                throw new DuplicateResourceException("Email already registered: " + dto.getEmail());
+            }
+            user.setEmail(dto.getEmail());
+        }
+
         user.setRole(dto.getRole() != null ? dto.getRole() : user.getRole());
         user.setIsActive(dto.getIsActive() != null ? dto.getIsActive() : user.getIsActive());
 

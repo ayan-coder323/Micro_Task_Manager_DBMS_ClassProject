@@ -12,7 +12,7 @@ export default memo(function ProfilePage() {
   const [totalElements, setTotalElements] = useState(0)
   const [loadingUsers, setLoadingUsers] = useState(false)
   const [editingUserId, setEditingUserId] = useState(null)
-  const [editForm, setEditForm] = useState({ role: '', isActive: 1 })
+  const [editForm, setEditForm] = useState({ username: '', email: '', role: '', isActive: 1 })
 
   const fetchUsers = async (pageNumber) => {
     setLoadingUsers(true)
@@ -331,8 +331,34 @@ export default memo(function ProfilePage() {
                 {users.map(u => (
                   <tr key={u.id} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
                     <td style={{ padding: '16px', fontSize: 13, color: 'var(--text-secondary)' }}>#{u.id}</td>
-                    <td style={{ padding: '16px', fontSize: 14, fontWeight: 500, color: 'var(--text-primary)' }}>{u.username}</td>
-                    <td style={{ padding: '16px', fontSize: 13, color: 'var(--text-secondary)' }}>{u.email}</td>
+                    <td style={{ padding: '16px', fontSize: 14, fontWeight: 500, color: 'var(--text-primary)' }}>
+                      {editingUserId === u.id ? (
+                        <input
+                          type="text"
+                          value={editForm.username}
+                          onChange={(e) => setEditForm({ ...editForm, username: e.target.value })}
+                          style={{
+                            background: 'var(--bg-raised)', border: '1px solid var(--border-default)',
+                            color: 'var(--text-primary)', padding: '6px 10px', borderRadius: '4px', fontSize: 13,
+                            width: '100%', boxSizing: 'border-box'
+                          }}
+                        />
+                      ) : u.username}
+                    </td>
+                    <td style={{ padding: '16px', fontSize: 13, color: 'var(--text-secondary)' }}>
+                      {editingUserId === u.id ? (
+                        <input
+                          type="email"
+                          value={editForm.email}
+                          onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                          style={{
+                            background: 'var(--bg-raised)', border: '1px solid var(--border-default)',
+                            color: 'var(--text-primary)', padding: '6px 10px', borderRadius: '4px', fontSize: 13,
+                            width: '100%', boxSizing: 'border-box'
+                          }}
+                        />
+                      ) : u.email}
+                    </td>
                     
                     {/* Role Column */}
                     <td style={{ padding: '16px' }}>
@@ -398,7 +424,7 @@ export default memo(function ProfilePage() {
                             <button 
                               onClick={() => {
                                 setEditingUserId(u.id);
-                                setEditForm({ role: u.role, isActive: u.isActive !== undefined ? u.isActive : 1 });
+                                setEditForm({ username: u.username, email: u.email, role: u.role, isActive: u.isActive !== undefined ? u.isActive : 1 });
                               }} 
                               style={{ padding: '6px', background: 'transparent', color: 'var(--info)', border: 'none', cursor: 'pointer' }}
                               title="Edit User"

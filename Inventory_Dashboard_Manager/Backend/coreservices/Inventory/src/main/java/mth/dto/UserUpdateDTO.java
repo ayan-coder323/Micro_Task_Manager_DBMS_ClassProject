@@ -13,12 +13,18 @@ public class UserUpdateDTO {
     @JsonProperty("isActive")
     private Integer isActive;
 
+    private String username;
+
+    private String email;
+
     public UserUpdateDTO() {
     }
 
-    public UserUpdateDTO(String role, Integer isActive) {
+    public UserUpdateDTO(String role, Integer isActive, String username, String email) {
         this.role = role;
         this.isActive = isActive;
+        this.username = username;
+        this.email = email;
     }
 
     public String getRole() {
@@ -37,9 +43,25 @@ public class UserUpdateDTO {
         this.isActive = isActive;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     @Override
     public String toString() {
-        return "UserUpdateDTO [role=" + role + ", isActive=" + isActive + "]";
+        return "UserUpdateDTO [role=" + role + ", isActive=" + isActive + ", username=" + username + ", email=" + email + "]";
     }
 }
 
